@@ -20,54 +20,6 @@ body {
   background: #eee;
   border-right: 1px solid #ddd;
 }
-.file-manager .browser a {
-  cursor: help;
-  position: relative;
-  display: inline-block;
-  margin: 10px 0 0 10px;
-  width: 150px;
-  height: 150px;
-  text-align: center;
-  text-decoration: none;
-  color: black;
-  overflow: hidden;
-  border: 1px solid #eee;
-  padding: 2px;
-}
-.file-manager .browser a figure {
-  margin: 0;
-  overflow: hidden;
-}
-.file-manager .browser a figcaption {
-  position: absolute;
-  top: 116px;
-  left: 0;
-}
-.file-manager .browser a img {
-  border: none;
-  max-width: 100%;
-}
-.file-manager .browser a .actions {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-.file-manager .browser a .actions button {
-  width: 60px;
-}
-.file-manager .browser a:hover {
-  background: #efefef;
-  border-color: #bbb;
-}
-.file-manager .browser a:hover .actions {
-  display: block;
-}
-.file-manager .browser a.new-file {
-  cursor: zoom-in;
-  line-height: 180px;
-  font-weight: 600;
-}
 .folders {
   padding: 10px;
 }
@@ -121,7 +73,7 @@ body {
 .folders a:hover {
   background: #ddd;
 }
-.folders .selected a {
+.folders .selected > a {
   background: #222;
   color: #fff;
 }
@@ -129,15 +81,89 @@ body {
   margin: 10px 0 0 10px;
   cursor: pointer;
   width: 100px;
-  height: 25px;
+  height: 27px;
   line-height: 25px;
   border: 1px solid #666;
   border-radius: 5px;
   background: #fff;
+  font-size: .7em;
+  text-transform: uppercase;
+}
+.actions button:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+.actions button.delete {
+  background: #ffc0ba;
+}
+.actions button.select {
+  background: #baffd2;
 }
 nav .actions {
   border-top: 1px solid #ddd;
   text-align: center;
   padding: 10px;
   margin-top: 20px;
+}
+.browser a {
+  cursor: help;
+  position: relative;
+  display: inline-block;
+  margin: 10px 0 0 10px;
+  width: 150px;
+  height: 150px;
+  text-align: center;
+  text-decoration: none;
+  color: black;
+  overflow: hidden;
+  border: 1px solid #eee;
+  padding: 2px;
+}
+.browser a figure {
+  margin: 0;
+  overflow: hidden;
+}
+.browser a figcaption {
+  position: absolute;
+  top: 116px;
+  left: 0;
+}
+.browser a img {
+  border: none;
+  max-width: 100%;
+}
+.browser a .actions {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.browser a .actions button {
+  width: 60px;
+}
+.browser a:hover {
+  background: #efefef;
+  border-color: #bbb;
+}
+.browser a:hover .actions {
+  display: block;
+}
+.browser a.new-file {
+  cursor: zoom-in;
+  line-height: 180px;
+  font-weight: 600;
+}
+.image-detail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(255, 255, 255, 0.6);
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  line-height: 100vh;
+}
+.image-detail img {
+  max-height: 100%;
+  max-width: 100%;
+  cursor: zoom-out;
 }

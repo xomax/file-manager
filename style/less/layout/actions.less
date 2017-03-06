@@ -3,11 +3,22 @@
 		margin: 10px 0 0 10px;
 		cursor: pointer;
 		width: 100px;
-		height: 25px;
+		height: 27px;
 		line-height: 25px;
 		border: 1px solid #666;
 		border-radius: 5px;
 		background: #fff;
+		font-size: .7em;
+		text-transform: uppercase;
+		&:hover {
+			box-shadow: 0 0 10px rgba(0,0,0,.4);
+		}
+		&.delete {
+			background: #ffc0ba;
+		}
+		&.select {
+			background: #baffd2;
+		}
 	}
 }
 nav .actions {
