@@ -12,12 +12,12 @@
 	}
 	.browser {
 		a {
+			cursor: help;
 			position: relative;
 			display: inline-block;
 			margin: 10px 0 0 10px;
 			width: 150px;
 			height: 150px;
-			line-height: 150px;
 			text-align: center;
 			text-decoration: none;
 			color: black;
@@ -30,16 +30,35 @@
 			}
 			figcaption {
 				position: absolute;
-				top: 50px;
+				top: 116px;
 				left: 0;
 			}
 			img {
 				border: none;
-				width: 100%;
+				max-width: 100%;
+			}
+			.actions {
+				display: none;
+				position: absolute;
+				top: 0;
+				left: 0;
+				button {
+					margin: 10px 0 0 10px;
+					cursor: pointer;
+					width: 60px;
+					height: 25px;
+					line-height: 25px;
+					border: 1px solid #666;
+					border-radius: 5px;
+					background: #fff;
+				}
 			}
 			&:hover {
 				background: #efefef;
 				border-color: #bbb;
+				.actions {
+					display: block;
+				}
 			}
 		}
 	}
