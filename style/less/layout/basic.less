@@ -1,0 +1,46 @@
+.file-manager {
+	display: flex;
+	min-height: 100vh;
+	flex-direction: row;
+	section {
+		height: 100vh;
+	}
+	.navigation {
+		flex: 0 0 200px;
+		background: #eee;
+		border-right: 1px solid #ddd;
+	}
+	.browser {
+		a {
+			position: relative;
+			display: inline-block;
+			margin: 10px 0 0 10px;
+			width: 150px;
+			height: 150px;
+			line-height: 150px;
+			text-align: center;
+			text-decoration: none;
+			color: black;
+			overflow: hidden;
+			border: 1px solid #eee;
+			padding: 2px;
+			figure {
+				margin: 0;
+				overflow: hidden;
+			}
+			figcaption {
+				position: absolute;
+				top: 50px;
+				left: 0;
+			}
+			img {
+				border: none;
+				width: 100%;
+			}
+			&:hover {
+				background: #efefef;
+				border-color: #bbb;
+			}
+		}
+	}
+}
