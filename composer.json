@@ -23,7 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-          "": ["php/"]
+          "": ["php/", "vendor/xomax/file-icon-generator/src/"]
         }
     }
 }

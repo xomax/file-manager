@@ -1,6 +1,7 @@
 <?php
 	namespace FileManager;
 
+	use FileIconGenerator\Helper as IconHelper;
 	use Kumatch\FilenameNormalizer\Normalizer;
 	use Symfony\Component\Finder\SplFileInfo;
 	use wapmorgan\FileTypeDetector\Detector;
@@ -9,7 +10,17 @@
 
 		private $folder = 'uploads';
 		private $linkFolder = 'uploads';
+		private $iconFolder = 'icons';
+
+		/**
+		 * @var FolderHandler
+		 */
 		private $folderHandler;
+
+		/**
+		 * @var IconHelper
+		 */
+		private $iconHandler;
 
 		/**
 		 * @return \FileManager\FolderHandler
@@ -24,6 +35,13 @@
 		{
 			if ($this->folderHandler === null) {
 				$this->folderHandler = new FolderHandler($this->folder);
+			}
+		}
+
+		private function loadIconHandler()
+		{
+			if ($this->iconHandler === null) {
+				$this->iconHandler = new IconHelper();
 			}
 		}
 
@@ -134,13 +152,23 @@
 			';
 		}
 
+		private function getIcon ($ext)
+		{
+			$fileName = $this->iconFolder.'/'.$ext.'.png';
+			if (file_exists($fileName)) {
+				return $fileName;
+			}
+			return null;
+		}
+
 		private function addFilePreview (SplFileInfo $file)
 		{
 			$mime = Detector::detectByFilename($file->getRealPath());
+			$image = (is_array($mime) && $mime[0] == 'image' && file_exists($this->getThumbLinkPath($file->getPathname())) ? $this->getThumbLinkPath($file->getPathname()) : $this->getIcon($file->getExtension()));
 			return '
 				<a href="'.$this->getLinkPath($file->getPathname()).'">
 					<figure>
-						<span class="image">'.(is_array($mime) && $mime[0] == 'image' ? '<img src="'.$this->getThumbLinkPath($file->getPathname()).'" alt="">' : '').'</span>
+						<span class="image">'.($image != '' ? '<img src="'.$image.'" alt="">' : '').'</span>
 						<figcaption>
 							'.$file->getFilename().'
 						</figcaption>
@@ -165,6 +193,7 @@
 
 		private function renderBrowser ($folderName)
 		{
+			$this->loadIconHandler();
 			$r = [];
 			$files = $this->folderHandler->getFiles($folderName);
 			$r['snippet']['browser'] = $this->addNewFilePlaceHolder();
