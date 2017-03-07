@@ -167,3 +167,15 @@ nav .actions {
   max-width: 100%;
   cursor: zoom-out;
 }
+.new-folder-form input {
+  padding: 5px 10px;
+  width: 80%;
+  margin: 20px auto;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  outline: none;
+}
+.jconfirm-box {
+  width: 400px;
+  margin: 0 auto;
+}

@@ -17,7 +17,9 @@
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel="stylesheet" href="style/main.css">
+	<link rel="stylesheet" href="style/jquery-confirm.min.css">
 	<script type="application/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<script type="application/javascript" src="scripts/jquery-confirm.min.js"></script>
 	<script type="application/javascript" src="scripts/default.js"></script>
 	<title>FileManager</title>
 </head>

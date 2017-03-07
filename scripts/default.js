@@ -66,26 +66,53 @@ var FileManager = {
 	openNewFolder: function ($button) {
 		var form = $('<form class="new-folder-form" action="" method="post"></form>');
 		var input = $('<input type="text" name="name">').appendTo(form);
-		var submit = $('<input type="submit" value="Uložit">').appendTo(form);
 		var $this = this;
-		$button
-			.after(form)
-			.hide();
-		input.focus();
-		form.on('submit', function(e){
-			e.preventDefault();
-			$this.api('new-folder', input.val(), function(){
-				form.remove();
-				$button.show();
-				$this.initFolders();
-			});
+		$.confirm({
+			title: 'Nový adresář',
+			content: form,
+			buttons: {
+				formSubmit: {
+					text: 'Založit',
+					btnClass: 'btn-blue',
+					action: function () {
+						var name = this.$content.find('input[name="name"]').val();
+						if(!name){
+							$.alert('provide a valid name');
+							return false;
+						}
+						$this.api('new-folder', name, function(){
+							$this.initFolders();
+						});
+					}
+				}
+			},
+			onContentReady: function () {
+				input.focus();
+				// bind to events
+				var jc = this;
+				this.$content.find('form').on('submit', function (e) {
+					// if the user submits the form by pressing enter in the field.
+					e.preventDefault();
+					jc.$$formSubmit.trigger('click'); // reference the button and click it
+				});
+			}
 		});
 	},
 	openDeleteFolder: function ($button) {
-		// TODO confirmation
 		var $this = this;
-		this.api('delete-folder', null, function(){
-			$this.initFolders();
+		$.confirm({
+			theme: 'material',
+			title: 'Potvrdit smazání adresáře',
+			content: 'Skutečně chcete smazat adresář <strong>'+this.selectedFolder.text()+'</strong>?',
+			confirmButton: 'Smazat',
+			cancelButton: 'Ne',
+			confirmButtonClass: 'btn-primary',
+			keyboardEnabled: true,
+			confirm: function(){
+				$this.api('delete-folder', null, function(){
+					$this.initFolders();
+				});
+			}
 		});
 	},
 	openFolder: function ($link) {
