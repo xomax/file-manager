@@ -37,6 +37,10 @@ var FileManager = {
 				e.preventDefault();
 				$this.openNewFolder($(this));
 			})
+			.on('click', '.delete-folder', function(e){
+				e.preventDefault();
+				$this.openDeleteFolder($(this));
+			})
 			.on('click', '.folders a', function(e){
 				e.preventDefault();
 				$this.openFolder($(this));
@@ -77,12 +81,17 @@ var FileManager = {
 			});
 		});
 	},
+	openDeleteFolder: function ($button) {
+		// TODO confirmation
+		var $this = this;
+		this.api('delete-folder', null, function(){
+			$this.initFolders();
+		});
+	},
 	openFolder: function ($link) {
 		this.unselectFolder();
 		this.selectFolder($link);
-		this.api('load-folder', $link.attr('href'), function(){
-			console.log('loaded');
-		});
+		this.api('load-folder', $link.attr('href'));
 	},
 	unselectFolder: function () {
 		if (this.selectedFolder != null) {
@@ -93,6 +102,23 @@ var FileManager = {
 	selectFolder: function ($link) {
 		this.selectedFolder = $link.parent();
 		this.selectedFolder.addClass('selected');
+		this.checkFolderButtons($link.attr('href'));
+	},
+	checkFolderButtons: function (currentFolderLink) {
+		var depth = currentFolderLink.split("/").length;
+		if (currentFolderLink == '') {
+			depth = 0;
+		}
+		if (depth == 0) {
+			$('button.delete-folder').hide();
+			$('button.new-folder').show();
+		} else if (depth > 2) {
+			$('button.delete-folder').show();
+			$('button.new-folder').hide();
+		} else {
+			$('button.delete-folder').show();
+			$('button.new-folder').show();
+		}
 	},
 	api: function (action, value, callback) {
 		$.ajax({

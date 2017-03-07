@@ -75,7 +75,7 @@
 
 		public function isAllowedAction ($action)
 		{
-			$allowed = ['new-folder', 'load-folder'];
+			$allowed = ['new-folder', 'load-folder', 'delete-folder'];
 			return in_array($action, $allowed);
 		}
 
@@ -98,6 +98,11 @@
 					foreach ($files as $file) {
 						$r['snippet']['browser'] .= $this->addFilePreview($file);
 					}
+				} elseif ($action == 'delete-folder') {
+					$this->loadFolderHandler();
+					$folderName = isset($_POST['parent']) ? $_POST['parent'] : null;
+					$this->folderHandler->delete($folderName);
+					$r['snippet']['navigator'] = '<ul>'.$this->generateFolderNavigation().'</ul>';
 				}
 			}
 			return $r;

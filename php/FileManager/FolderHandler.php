@@ -67,4 +67,9 @@
 		{
 			$this->fileSystem->mkdir($this->rootFolder.'/'.$parent.'/'.$folderName);
 		}
+
+		public function delete ($folderName)
+		{
+			$this->fileSystem->remove($this->rootFolder.'/'.$folderName);
+		}
 	}

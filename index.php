@@ -33,6 +33,7 @@
 			</div>
 			<div class="actions">
 				<button class="new-folder">Nový adresář</button>
+				<button class="delete-folder">Smazat adresář</button>
 			</div>
 		</nav>
 		<section class="browser" id="snippet-browser"></section>
