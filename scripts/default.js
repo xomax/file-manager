@@ -84,6 +84,9 @@ var FileManager = {
 							$this.initFolders();
 						});
 					}
+				},
+				cancel: {
+					text: 'Zpět'
 				}
 			},
 			onContentReady: function () {
