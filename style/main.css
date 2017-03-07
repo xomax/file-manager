@@ -124,12 +124,19 @@ nav .actions {
 }
 .browser a figcaption {
   position: absolute;
+  padding: 0 10px;
+  font-size: .8em;
   top: 116px;
   left: 0;
 }
 .browser a img {
   border: none;
   max-width: 100%;
+  max-height: 100%;
+}
+.browser a .image {
+  display: block;
+  height: 100px;
 }
 .browser a .actions {
   display: none;

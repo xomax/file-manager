@@ -8,6 +8,7 @@
 	class Manager {
 
 		private $folder = 'uploads';
+		private $linkFolder = 'uploads';
 		private $folderHandler;
 
 		/**
@@ -44,6 +45,16 @@
 			return $this;
 		}
 
+		/**
+		 * @param string $folder
+		 * @return Manager
+		 */
+		public function setLinkFolder ( $folder )
+		{
+			$this->linkFolder = $folder;
+			return $this;
+		}
+
 		public function generateFolderNavigation ()
 		{
 			$r = '
@@ -75,7 +86,7 @@
 
 		public function isAllowedAction ($action)
 		{
-			$allowed = ['new-folder', 'load-folder', 'delete-folder'];
+			$allowed = ['new-folder', 'load-folder', 'delete-folder', 'upload-file'];
 			return in_array($action, $allowed);
 		}
 
@@ -88,21 +99,22 @@
 					$parentFolder = isset($_POST['parent']) ? $_POST['parent'] : null;
 					if ($newFolderName != null) {
 						$this->folderHandler->create($newFolderName, $parentFolder);
-						$r['snippet']['navigator'] = '<ul>'.$this->generateFolderNavigation().'</ul>';
+						return $this->renderNavigation();
 					}
 				} elseif ($action == 'load-folder') {
 					$this->loadFolderHandler();
 					$folderName = isset($_POST['value']) ? $_POST['value'] : null;
-					$files = $this->folderHandler->getFiles($folderName);
-					$r['snippet']['browser'] = $this->addNewFilePlaceHolder();
-					foreach ($files as $file) {
-						$r['snippet']['browser'] .= $this->addFilePreview($file);
-					}
+					return $this->renderBrowser($folderName);
 				} elseif ($action == 'delete-folder') {
 					$this->loadFolderHandler();
 					$folderName = isset($_POST['parent']) ? $_POST['parent'] : null;
 					$this->folderHandler->delete($folderName);
-					$r['snippet']['navigator'] = '<ul>'.$this->generateFolderNavigation().'</ul>';
+					return $this->renderNavigation();
+				} elseif ($action == 'upload-file') {
+					$this->loadFolderHandler();
+					$folderName = isset($_POST['parent']) ? $_POST['parent'] : null;
+					$this->folderHandler->upload($folderName, 'file');
+					return $this->renderBrowser($folderName);
 				}
 			}
 			return $r;
@@ -126,9 +138,9 @@
 		{
 			$mime = Detector::detectByFilename($file->getRealPath());
 			return '
-				<a href="'.$file->getPathname().'">
+				<a href="'.$this->getLinkPath($file->getPathname()).'">
 					<figure>
-						'.(is_array($mime) && $mime[0] == 'image' ? '<img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/123941/placeimg01.jpg" alt="">' : '').'
+						<span class="image">'.(is_array($mime) && $mime[0] == 'image' ? '<img src="'.$this->getLinkPath($file->getPathname()).'" alt="">' : '').'</span>
 						<figcaption>
 							'.$file->getFilename().'
 						</figcaption>
@@ -139,5 +151,28 @@
 					</span>
 				</a>
 			';
+		}
+
+		private function getLinkPath ($link)
+		{
+			return $this->linkFolder.'/'.str_replace($this->folder.'/', '', $link);
+		}
+
+		private function renderBrowser ($folderName)
+		{
+			$r = [];
+			$files = $this->folderHandler->getFiles($folderName);
+			$r['snippet']['browser'] = $this->addNewFilePlaceHolder();
+			foreach ($files as $file) {
+				$r['snippet']['browser'] .= $this->addFilePreview($file);
+			}
+			return $r;
+		}
+
+		private function renderNavigation ()
+		{
+			$r = [];
+			$r['snippet']['navigator'] = '<ul>'.$this->generateFolderNavigation().'</ul>';
+			return $r;
 		}
 	}

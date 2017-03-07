@@ -3,6 +3,7 @@
 
 	use Symfony\Component\Filesystem\Filesystem;
 	use Symfony\Component\Finder\Finder;
+	use Sirius\Upload\Handler as UploadHandler;
 
 	class FolderHandler {
 
@@ -71,5 +72,29 @@
 		public function delete ($folderName)
 		{
 			$this->fileSystem->remove($this->rootFolder.'/'.$folderName);
+		}
+
+		public function upload ($folderName, $fileKey)
+		{
+			$uploader = new UploadHandler($this->rootFolder.'/'.$folderName);
+//			$uploader->addRule('extension', ['allowed' => 'jpg', 'jpeg', 'png'], '{label} should be a valid image (jpg, jpeg, png)', 'Profile picture');
+//			$uploader->addRule('size', ['max' => '20M'], '{label} should have less than {max}', 'Profile picture');
+//			$uploader->addRule('imageratio', ['ratio' => 1], '{label} should be a sqare image', 'Profile picture');
+
+			$result = $uploader->process($_FILES[$fileKey]);
+
+			if ($result->isValid()) {
+				try {
+					$result->confirm(); // this will remove the .lock file
+
+				} catch (\Exception $e) {
+					// something wrong happened, we don't need the uploaded files anymore
+					$result->clear();
+					throw $e;
+				}
+			} else {
+				// image was not moved to the container, where are error messages
+				$messages = $result->getMessages();
+			}
 		}
 	}
