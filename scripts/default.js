@@ -121,7 +121,25 @@ var FileManager = {
 	openFolder: function ($link) {
 		this.unselectFolder();
 		this.selectFolder($link);
-		this.api('load-folder', $link.attr('href'));
+		this.loadFolder();
+	},
+	loadFolder: function () {
+		var link = $('a', this.selectedFolder).attr('href');
+		var $this = this;
+		this.api('load-folder', link, function () {
+			$(".new-file").dropzone({
+				url: "?action=upload-file",
+				init: function() {
+					this
+						.on("success", function(file) {
+							$this.loadFolder();
+						})
+						.on("sending", function(file, xhr, data) {
+							data.append("parent", $this.getSelectedFolderLink());
+						});
+				}
+			});
+		});
 	},
 	unselectFolder: function () {
 		if (this.selectedFolder != null) {

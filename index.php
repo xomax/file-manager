@@ -18,8 +18,10 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel="stylesheet" href="style/main.css">
 	<link rel="stylesheet" href="style/jquery-confirm.min.css">
+	<link rel="stylesheet" href="style/dropzone.min.css">
 	<script type="application/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script type="application/javascript" src="scripts/jquery-confirm.min.js"></script>
+	<script type="application/javascript" src="scripts/dropzone.min.js"></script>
 	<script type="application/javascript" src="scripts/default.js"></script>
 	<title>FileManager</title>
 </head>
