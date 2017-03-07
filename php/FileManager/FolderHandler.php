@@ -44,10 +44,7 @@
 					->depth(0)
 					->sortByName();
 				if (count($readFiles) > 0) {
-					$readFiles = iterator_to_array($readFiles);
-					foreach ($readFiles as $file) {
-						$files[] = $file->getFilename();
-					}
+					return iterator_to_array($readFiles);
 				}
 			}
 			return $files;

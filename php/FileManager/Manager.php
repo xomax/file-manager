@@ -2,6 +2,8 @@
 	namespace FileManager;
 
 	use Kumatch\FilenameNormalizer\Normalizer;
+	use Symfony\Component\Finder\SplFileInfo;
+	use wapmorgan\FileTypeDetector\Detector;
 
 	class Manager {
 
@@ -115,14 +117,15 @@
 			';
 		}
 
-		private function addFilePreview ($file)
+		private function addFilePreview (SplFileInfo $file)
 		{
+			$mime = Detector::detectByFilename($file->getRealPath());
 			return '
-				<a href="'.$file.'">
+				<a href="'.$file->getPathname().'">
 					<figure>
-						<img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/123941/placeimg01.jpg" alt="">
+						'.(is_array($mime) && $mime[0] == 'image' ? '<img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/123941/placeimg01.jpg" alt="">' : '').'
 						<figcaption>
-							'.$file.'
+							'.$file->getFilename().'
 						</figcaption>
 					</figure>
 					<span class="actions">
