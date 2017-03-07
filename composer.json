@@ -1,0 +1,19 @@
+{
+    "name": "xomax/file-manager",
+    "authors": [
+        {
+            "name": "Tom Hnatovsky",
+            "email": "hnatovsky@xswd.cz"
+        }
+    ],
+    "require": {
+        "symfony/filesystem": "^3.2",
+        "symfony/finder": "^3.2",
+        "kumatch/filename-normalizer": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "": ["php/"]
+        }
+    }
+}
