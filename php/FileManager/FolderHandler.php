@@ -1,6 +1,7 @@
 <?php
 	namespace FileManager;
 
+	use Intervention\Image\ImageManagerStatic as Image;
 	use Symfony\Component\Filesystem\Filesystem;
 	use Symfony\Component\Finder\Finder;
 	use Sirius\Upload\Handler as UploadHandler;
@@ -26,7 +27,7 @@
 				if (count($readFolders) > 0) {
 					$readFolders = iterator_to_array($readFolders);
 					foreach ($readFolders as $folder) {
-						if ($folder->getRelativePath() == $parentFolder) {
+						if ($folder->getFilename() != '_thumbs_' && $folder->getRelativePath() == $parentFolder) {
 							$folders[] = $folder->getFilename();
 						}
 					}
@@ -76,7 +77,8 @@
 
 		public function upload ($folderName, $fileKey)
 		{
-			$uploader = new UploadHandler($this->rootFolder.'/'.$folderName);
+			$folder = $this->rootFolder.'/'.$folderName;
+			$uploader = new UploadHandler($folder);
 //			$uploader->addRule('extension', ['allowed' => 'jpg', 'jpeg', 'png'], '{label} should be a valid image (jpg, jpeg, png)', 'Profile picture');
 //			$uploader->addRule('size', ['max' => '20M'], '{label} should have less than {max}', 'Profile picture');
 //			$uploader->addRule('imageratio', ['ratio' => 1], '{label} should be a sqare image', 'Profile picture');
@@ -85,8 +87,17 @@
 
 			if ($result->isValid()) {
 				try {
-					$result->confirm(); // this will remove the .lock file
+					$file = $folder.'/'.$result->name;
+					$targetFolder = $this->rootFolder.'/_thumbs_/'.$folderName;
 
+					$img = Image::make($file);
+					$img->heighten(100, function ($constraint) {
+						$constraint->upsize();
+					});
+					$this->fileSystem->mkdir($targetFolder);
+					$img->save($targetFolder.'/'.$result->name);
+
+					$result->confirm(); // this will remove the .lock file
 				} catch (\Exception $e) {
 					// something wrong happened, we don't need the uploaded files anymore
 					$result->clear();

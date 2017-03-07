@@ -140,7 +140,7 @@
 			return '
 				<a href="'.$this->getLinkPath($file->getPathname()).'">
 					<figure>
-						<span class="image">'.(is_array($mime) && $mime[0] == 'image' ? '<img src="'.$this->getLinkPath($file->getPathname()).'" alt="">' : '').'</span>
+						<span class="image">'.(is_array($mime) && $mime[0] == 'image' ? '<img src="'.$this->getThumbLinkPath($file->getPathname()).'" alt="">' : '').'</span>
 						<figcaption>
 							'.$file->getFilename().'
 						</figcaption>
@@ -156,6 +156,11 @@
 		private function getLinkPath ($link)
 		{
 			return $this->linkFolder.'/'.str_replace($this->folder.'/', '', $link);
+		}
+
+		private function getThumbLinkPath ($link)
+		{
+			return $this->linkFolder.'/_thumbs_/'.str_replace($this->folder.'/', '', $link);
 		}
 
 		private function renderBrowser ($folderName)
