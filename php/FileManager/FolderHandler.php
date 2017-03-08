@@ -1,6 +1,7 @@
 <?php
 	namespace FileManager;
 
+	use Intervention\Image\Exception\NotReadableException;
 	use Intervention\Image\ImageManagerStatic as Image;
 	use Symfony\Component\Filesystem\Filesystem;
 	use Symfony\Component\Finder\Finder;
@@ -90,12 +91,16 @@
 					$file = $folder.'/'.$result->name;
 					$targetFolder = $this->rootFolder.'/_thumbs_/'.$folderName;
 
-					$img = Image::make($file);
-					$img->heighten(100, function ($constraint) {
-						$constraint->upsize();
-					});
-					$this->fileSystem->mkdir($targetFolder);
-					$img->save($targetFolder.'/'.$result->name);
+					try {
+						$img = Image::make($file);
+						$img->heighten(100, function ($constraint) {
+							$constraint->upsize();
+						});
+						$this->fileSystem->mkdir($targetFolder);
+						$img->save($targetFolder.'/'.$result->name);
+					} catch (NotReadableException $e) {
+						// file is not an image
+					}
 
 					$result->confirm(); // this will remove the .lock file
 				} catch (\Exception $e) {
