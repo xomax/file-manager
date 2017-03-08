@@ -181,11 +181,7 @@
 
 		private function getIcon ($ext)
 		{
-			$fileName = $this->iconFolder.'/'.$ext.'.png';
-			if (file_exists($fileName)) {
-				return $fileName;
-			}
-			return null;
+			return $this->iconFolder.'/'.$ext.'.png';
 		}
 
 		private function addFilePreview (SplFileInfo $file)
