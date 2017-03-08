@@ -19,7 +19,8 @@
         "wapmorgan/file-type-detector": "^1.0",
         "siriusphp/upload": "^2.1",
         "intervention/image": "^2.3",
-        "xomax/file-icon-generator": "^0.1.0"
+        "xomax/file-icon-generator": "^0.1.0",
+        "mattketmo/camel": "^1.1"
     },
     "autoload": {
         "psr-4": {

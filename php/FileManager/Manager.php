@@ -1,6 +1,9 @@
 <?php
 	namespace FileManager;
 
+	use Camel\CaseTransformer;
+	use Camel\Format\CamelCase;
+	use Camel\Format\SpinalCase;
 	use FileIconGenerator\Helper as IconHelper;
 	use Kumatch\FilenameNormalizer\Normalizer;
 	use Symfony\Component\Finder\SplFileInfo;
@@ -11,6 +14,7 @@
 		private $folder = 'uploads';
 		private $linkFolder = 'uploads';
 		private $iconFolder = 'icons';
+		private $allowedActions = ['load-folder'];
 
 		/**
 		 * @var FolderHandler
@@ -73,79 +77,99 @@
 			return $this;
 		}
 
-		public function generateFolderNavigation ()
-		{
-			$r = '
-				<li class="root">
-					<a href="">/</a>
-				</li>
-			';
-			$r .= $this->generateFolderNavigationDirecotries();
-			return $r;
-		}
-
-		private function generateFolderNavigationDirecotries ($parent = null)
-		{
-			$r = '';
-			if ($folders = $this->getFolderHandler()->getFolders($parent)) {
-				foreach ($folders as $folder) {
-					$path = $parent . ($parent != null ? '/' : '') . $folder;
-					$subDirectories = $this->generateFolderNavigationDirecotries($path);
-					$r .= '
-						<li>
-							<a href="'.$path.'">'.$folder.'</a>
-							'.($subDirectories != '' ? '<ul>'.$subDirectories.'</ul>' : '').'
-						</li>
-					';
-				}
-			}
-			return $r;
-		}
-
-		public function isAllowedAction ($action)
-		{
-			$allowed = ['new-folder', 'load-folder', 'delete-folder', 'upload-file', 'delete-file'];
-			return in_array($action, $allowed);
-		}
-
-		public function perform ($action) {
-			$r = [];
-			if ($this->isAllowedAction($action)) {
-				if ($action == 'new-folder') {
-					$this->loadFolderHandler();
-					$newFolderName = isset($_POST['value']) ? $this->normalize($_POST['value']) : null;
-					$parentFolder = isset($_POST['parent']) ? $_POST['parent'] : null;
-					if ($newFolderName != null) {
-						$this->folderHandler->create($newFolderName, $parentFolder);
-						return $this->renderNavigation();
-					}
-				} elseif ($action == 'load-folder') {
-					$this->loadFolderHandler();
-					$folderName = isset($_POST['value']) ? $_POST['value'] : null;
-					return $this->renderBrowser($folderName);
-				} elseif ($action == 'delete-folder') {
-					$this->loadFolderHandler();
-					$folderName = isset($_POST['parent']) ? $_POST['parent'] : null;
-					$this->folderHandler->delete($folderName);
-					return $this->renderNavigation();
-				} elseif ($action == 'upload-file') {
-					$this->loadFolderHandler();
-					$folderName = isset($_POST['parent']) ? $_POST['parent'] : null;
-					$this->folderHandler->upload($folderName, 'file');
-					return $this->renderBrowser($folderName);
-				} elseif ($action == 'delete-file') {
-					$this->loadFolderHandler();
-					$fileName = isset($_POST['value']) ? trim($_POST['value']) : null;
-					$folderName = isset($_POST['parent']) ? trim($_POST['parent']) : null;
-					$this->folderHandler->deleteFile($folderName.'/'.$fileName);
-				}
-			}
-			return $r;
-		}
-
 		private function normalize ($name)
 		{
 			return Normalizer::normalize($name);
+		}
+
+		private function getLinkPath ($link)
+		{
+			return $this->linkFolder.'/'.str_replace($this->folder.'/', '', $link);
+		}
+
+		private function getThumbLinkPath ($link)
+		{
+			return $this->linkFolder.'/_thumbs_/'.str_replace($this->folder.'/', '', $link);
+		}
+
+
+
+		/**
+		 * Perform actions
+		 */
+		public function perform ($action) {
+			$r = [];
+			if ($this->isAllowedAction($action)) {
+				$transformer = new CaseTransformer(new SpinalCase, new CamelCase);
+				$action = $transformer->transform('perform-'.$action);
+
+				$value = isset($_POST['value']) ? trim($_POST['value']) : null;
+				$parent = isset($_POST['parent']) ? trim($_POST['parent']) : null;
+
+				$this->loadFolderHandler();
+				$r = $this->$action($value, $parent);
+
+			}
+			return $r;
+		}
+
+		private function performNewFolder ($newFolderName, $parentFolder)
+		{
+			if ($newFolderName != null) {
+				$newFolderName = $this->normalize($newFolderName);
+				$this->folderHandler->create($newFolderName, $parentFolder);
+				return $this->renderNavigation();
+			}
+			return [];
+		}
+
+		private function performLoadFolder ($folderName, $parentFolder)
+		{
+			return $this->renderBrowser($folderName);
+		}
+
+		private function performDeleteFolder ($folderName, $parentFolder)
+		{
+			if ($parentFolder != '') {
+				$this->folderHandler->delete($parentFolder);
+				$this->folderHandler->delete('_thumbs_/'.$parentFolder);
+				return $this->renderNavigation();
+			}
+		}
+
+		private function performUploadFile ($folderName, $parentFolder)
+		{
+			$this->folderHandler->upload($parentFolder, 'file');
+			return $this->renderBrowser($parentFolder);
+		}
+
+		private function performDeleteFile ($folderName, $parentFolder)
+		{
+			$this->folderHandler->deleteFile($parentFolder.'/'.$folderName);
+		}
+
+
+
+		/**
+		 * Render actions
+		 */
+		private function renderBrowser ($folderName)
+		{
+			$this->loadIconHandler();
+			$r = [];
+			$files = $this->folderHandler->getFiles($folderName);
+			$r['snippet']['browser'] = $this->addNewFilePlaceHolder();
+			foreach ($files as $file) {
+				$r['snippet']['browser'] .= $this->addFilePreview($file);
+			}
+			return $r;
+		}
+
+		private function renderNavigation ()
+		{
+			$r = [];
+			$r['snippet']['navigator'] = '<ul>'.$this->generateFolderNavigation().'</ul>';
+			return $r;
 		}
 
 		private function addNewFilePlaceHolder ()
@@ -179,39 +203,75 @@
 						</figcaption>
 					</figure>
 					<span class="actions">
-						<button class="select-file">Vybrat</button>
-						<button class="delete-file">Smazat</button>
+						'.($this->isAllowedAction('pick-file') ? '<button class="select-file">Vybrat</button>' : '').'
+						'.($this->isAllowedAction('delete-file') ? '<button class="delete-file">Smazat</button>' : '').'
 					</span>
 				</a>
 			';
 		}
 
-		private function getLinkPath ($link)
+		public function generateFolderNavigation ()
 		{
-			return $this->linkFolder.'/'.str_replace($this->folder.'/', '', $link);
+			$r = '
+				<li class="root">
+					<a href="">/</a>
+				</li>
+			';
+			$r .= $this->generateFolderNavigationDirecotries();
+			return $r;
 		}
 
-		private function getThumbLinkPath ($link)
+		public function generateFolderActions ()
 		{
-			return $this->linkFolder.'/_thumbs_/'.str_replace($this->folder.'/', '', $link);
-		}
-
-		private function renderBrowser ($folderName)
-		{
-			$this->loadIconHandler();
-			$r = [];
-			$files = $this->folderHandler->getFiles($folderName);
-			$r['snippet']['browser'] = $this->addNewFilePlaceHolder();
-			foreach ($files as $file) {
-				$r['snippet']['browser'] .= $this->addFilePreview($file);
+			$r = '';
+			if ($this->isAllowedAction('new-folder')) {
+				$r .= '<button class="new-folder">Nový adresář</button>';
+			}
+			if ($this->isAllowedAction('delete-folder')) {
+				$r .= '<button class="delete-folder">Smazat adresář</button>';
 			}
 			return $r;
 		}
 
-		private function renderNavigation ()
+		private function generateFolderNavigationDirecotries ($parent = null)
 		{
-			$r = [];
-			$r['snippet']['navigator'] = '<ul>'.$this->generateFolderNavigation().'</ul>';
+			$r = '';
+			if ($folders = $this->getFolderHandler()->getFolders($parent)) {
+				foreach ($folders as $folder) {
+					$path = $parent . ($parent != null ? '/' : '') . $folder;
+					$subDirectories = $this->generateFolderNavigationDirecotries($path);
+					$r .= '
+						<li>
+							<a href="'.$path.'">'.$folder.'</a>
+							'.($subDirectories != '' ? '<ul>'.$subDirectories.'</ul>' : '').'
+						</li>
+					';
+				}
+			}
 			return $r;
 		}
+
+
+		/**
+		 * Allowed actions
+		 */
+		public function allowDirectoriesManipulation () {
+			$this->allowedActions[] = 'new-folder';
+			$this->allowedActions[] = 'delete-folder';
+		}
+
+		public function allowFilesManipulation () {
+			$this->allowedActions[] = 'upload-file';
+			$this->allowedActions[] = 'delete-file';
+		}
+
+		public function allowFilePick () {
+			$this->allowedActions[] = 'pick-file';
+		}
+
+		public function isAllowedAction ($action)
+		{
+			return in_array($action, $this->allowedActions);
+		}
+
 	}

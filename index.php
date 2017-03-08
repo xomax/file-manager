@@ -3,6 +3,10 @@
 	$manager = new \FileManager\Manager();
 	$manager->setFolder(__DIR__.'/uploads');
 
+	$manager->allowDirectoriesManipulation();
+	$manager->allowFilesManipulation();
+	$manager->allowFilePick();
+
 	if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
 		$content = [];
 		$action = isset($_GET['action']) ? $_GET['action'] : null;
@@ -36,8 +40,9 @@
 				</ul>
 			</div>
 			<div class="actions">
-				<button class="new-folder">Nový adresář</button>
-				<button class="delete-folder">Smazat adresář</button>
+				<?
+					echo $manager->generateFolderActions();
+				?>
 			</div>
 		</nav>
 		<section class="browser" id="snippet-browser"></section>
