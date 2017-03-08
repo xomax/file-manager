@@ -89,6 +89,10 @@
 			return $this->linkFolder.'/_thumbs_/'.str_replace($this->folder.'/', '', $link);
 		}
 
+		private function getInnerThumbLinkPath ($link)
+		{
+			return $this->folder.'/_thumbs_/'.str_replace($this->folder.'/', '', $link);
+		}
 
 
 		/**
@@ -187,7 +191,7 @@
 		private function addFilePreview (SplFileInfo $file)
 		{
 			$mime = Detector::detectByFilename($file->getRealPath());
-			$image = (is_array($mime) && $mime[0] == 'image' && file_exists($this->getThumbLinkPath($file->getPathname())) ? $this->getThumbLinkPath($file->getPathname()) : $this->getIcon($file->getExtension()));
+			$image = (is_array($mime) && $mime[0] == 'image' && file_exists($this->folder .'/'. $this->getInnerThumbLinkPath($file->getPathname())) ? $this->getThumbLinkPath($file->getPathname()) : $this->getIcon($file->getExtension()));
 			return '
 				<a href="'.$this->getLinkPath($file->getPathname()).'">
 					<figure>
