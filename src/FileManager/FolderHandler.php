@@ -1,5 +1,5 @@
 <?php
-	namespace FileManager;
+	namespace xomax\FileManager;
 
 	use Intervention\Image\Exception\NotReadableException;
 	use Intervention\Image\ImageManagerStatic as Image;

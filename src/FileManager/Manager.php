@@ -1,10 +1,9 @@
 <?php
-	namespace FileManager;
+	namespace xomax\FileManager;
 
 	use Camel\CaseTransformer;
 	use Camel\Format\CamelCase;
 	use Camel\Format\SpinalCase;
-	use FileIconGenerator\Helper as IconHelper;
 	use Kumatch\FilenameNormalizer\Normalizer;
 	use Symfony\Component\Finder\SplFileInfo;
 	use wapmorgan\FileTypeDetector\Detector;
@@ -22,11 +21,6 @@
 		private $folderHandler;
 
 		/**
-		 * @var IconHelper
-		 */
-		private $iconHandler;
-
-		/**
 		 * @return \FileManager\FolderHandler
 		 */
 		public function getFolderHandler()
@@ -39,13 +33,6 @@
 		{
 			if ($this->folderHandler === null) {
 				$this->folderHandler = new FolderHandler($this->folder);
-			}
-		}
-
-		private function loadIconHandler()
-		{
-			if ($this->iconHandler === null) {
-				$this->iconHandler = new IconHelper();
 			}
 		}
 
@@ -135,6 +122,7 @@
 				$this->folderHandler->delete('_thumbs_/'.$parentFolder);
 				return $this->renderNavigation();
 			}
+			return [];
 		}
 
 		private function performUploadFile ($folderName, $parentFolder)
@@ -146,6 +134,7 @@
 		private function performDeleteFile ($folderName, $parentFolder)
 		{
 			$this->folderHandler->deleteFile($parentFolder.'/'.$folderName);
+			return [];
 		}
 
 
@@ -155,7 +144,6 @@
 		 */
 		private function renderBrowser ($folderName)
 		{
-			$this->loadIconHandler();
 			$r = [];
 			$files = $this->folderHandler->getFiles($folderName);
 			$r['snippet']['browser'] = $this->addNewFilePlaceHolder();

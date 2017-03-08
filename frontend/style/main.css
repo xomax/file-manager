@@ -1,0 +1,190 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+body {
+  font-family: Arial;
+  font-size: 0.85em;
+}
+.file-manager {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: row;
+}
+.file-manager section,
+.file-manager nav {
+  height: 100vh;
+}
+.file-manager nav {
+  flex: 0 0 200px;
+  background: #eee;
+  border-right: 1px solid #ddd;
+}
+.folders {
+  padding: 10px;
+}
+.folders ul {
+  margin: 0px 0px 0px 20px;
+  list-style: none;
+  line-height: 2em;
+}
+.folders ul li {
+  position: relative;
+}
+.folders ul li:before {
+  position: absolute;
+  left: -12px;
+  top: 0px;
+  content: '';
+  display: block;
+  border-left: 1px solid #ccc;
+  height: 1em;
+  border-bottom: 1px solid #ccc;
+  width: 10px;
+}
+.folders ul li:after {
+  position: absolute;
+  left: -12px;
+  bottom: -7px;
+  content: '';
+  display: block;
+  border-left: 1px solid #ccc;
+  height: 100%;
+}
+.folders ul li.root {
+  margin: 0px 0px 0px -20px;
+}
+.folders ul li.root:before {
+  display: none;
+}
+.folders ul li.root:after {
+  display: none;
+}
+.folders ul li:last-child:after {
+  display: none;
+}
+.folders a {
+  text-decoration: none;
+  color: #000;
+  display: block;
+  padding: 0 5px;
+  border-radius: 5px;
+}
+.folders a:hover {
+  background: #ddd;
+}
+.folders .selected > a {
+  background: #222;
+  color: #fff;
+}
+.actions button {
+  margin: 10px 0 0 10px;
+  cursor: pointer;
+  width: 100px;
+  height: 27px;
+  line-height: 25px;
+  border: 1px solid #666;
+  border-radius: 5px;
+  background: #fff;
+  font-size: .7em;
+  text-transform: uppercase;
+}
+.actions button:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+.actions button.delete-file {
+  background: #ffc0ba;
+}
+.actions button.select-file {
+  background: #baffd2;
+}
+nav .actions {
+  border-top: 1px solid #ddd;
+  text-align: center;
+  padding: 10px;
+  margin-top: 20px;
+}
+.browser a {
+  cursor: help;
+  position: relative;
+  display: inline-block;
+  margin: 10px 0 0 10px;
+  width: 150px;
+  height: 150px;
+  text-align: center;
+  text-decoration: none;
+  color: black;
+  overflow: hidden;
+  border: 1px solid #eee;
+  padding: 2px;
+}
+.browser a figure {
+  margin: 0;
+  overflow: hidden;
+}
+.browser a figcaption {
+  position: absolute;
+  padding: 0 10px;
+  font-size: .8em;
+  top: 116px;
+  left: 0;
+}
+.browser a img {
+  border: none;
+  max-width: 100%;
+  max-height: 100%;
+  vertical-align: middle;
+}
+.browser a .image {
+  display: block;
+  height: 100px;
+  line-height: 100px;
+}
+.browser a .actions {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.browser a .actions button {
+  width: 60px;
+}
+.browser a:hover {
+  background: #efefef;
+  border-color: #bbb;
+}
+.browser a:hover .actions {
+  display: block;
+}
+.browser a.new-file {
+  cursor: zoom-in;
+  line-height: 180px;
+  font-weight: 600;
+}
+.image-detail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(255, 255, 255, 0.6);
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  line-height: 100vh;
+}
+.image-detail img {
+  max-height: 100%;
+  max-width: 100%;
+  cursor: zoom-out;
+}
+.new-folder-form input {
+  padding: 5px 10px;
+  width: 80%;
+  margin: 20px auto;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  outline: none;
+}
+.jconfirm-box {
+  width: 400px;
+  margin: 0 auto;
+}
