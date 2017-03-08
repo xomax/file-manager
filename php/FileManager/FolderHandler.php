@@ -76,6 +76,18 @@
 			$this->fileSystem->remove($this->rootFolder.'/'.$folderName);
 		}
 
+		public function deleteFile ($fileName)
+		{
+			$filePath = $this->rootFolder .'/'. $fileName;
+			if ($this->fileSystem->exists($filePath)) {
+				$fileThumb = $this->rootFolder .'/_thumbs_/'. $fileName;
+				$this->fileSystem->remove($filePath);
+				if ($this->fileSystem->exists($fileThumb)) {
+					$this->fileSystem->remove($fileThumb);
+				}
+			}
+		}
+
 		public function upload ($folderName, $fileKey)
 		{
 			$folder = $this->rootFolder.'/'.$folderName;

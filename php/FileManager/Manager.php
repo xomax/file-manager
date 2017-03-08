@@ -104,7 +104,7 @@
 
 		public function isAllowedAction ($action)
 		{
-			$allowed = ['new-folder', 'load-folder', 'delete-folder', 'upload-file'];
+			$allowed = ['new-folder', 'load-folder', 'delete-folder', 'upload-file', 'delete-file'];
 			return in_array($action, $allowed);
 		}
 
@@ -133,6 +133,11 @@
 					$folderName = isset($_POST['parent']) ? $_POST['parent'] : null;
 					$this->folderHandler->upload($folderName, 'file');
 					return $this->renderBrowser($folderName);
+				} elseif ($action == 'delete-file') {
+					$this->loadFolderHandler();
+					$fileName = isset($_POST['value']) ? trim($_POST['value']) : null;
+					$folderName = isset($_POST['parent']) ? trim($_POST['parent']) : null;
+					$this->folderHandler->deleteFile($folderName.'/'.$fileName);
 				}
 			}
 			return $r;
@@ -174,8 +179,8 @@
 						</figcaption>
 					</figure>
 					<span class="actions">
-						<button class="select">Vybrat</button>
-						<button class="delete">Smazat</button>
+						<button class="select-file">Vybrat</button>
+						<button class="delete-file">Smazat</button>
 					</span>
 				</a>
 			';

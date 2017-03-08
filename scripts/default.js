@@ -21,18 +21,21 @@ var FileManager = {
 					$this.openDetail(link);
 				}
 			})
-			.on('click', '.browser button', function(e){
+			.on('click', '.delete-file', function(e){
 				e.preventDefault();
-				var button = $(this);
-				var link = button.closest('a');
+				var link = $(this).closest('a');
 				if (link.length > 0) {
-					$this.openButton(button, link);
+					$this.deleteFile(link);
 				}
 			})
-			.on('click', '.new-file', function(e){
-				e.preventDefault();
-				$this.openNewFile();
-			})
+			// .on('click', '.browser button', function(e){
+			// 	e.preventDefault();
+			// 	var button = $(this);
+			// 	var link = button.closest('a');
+			// 	if (link.length > 0) {
+			// 		$this.openButton(button, link);
+			// 	}
+			// })
 			.on('click', '.new-folder', function(e){
 				e.preventDefault();
 				$this.openNewFolder($(this));
@@ -57,11 +60,35 @@ var FileManager = {
 				});
 		}
 	},
+	deleteFile: function ($link) {
+		var link = $('figcaption', $link).text();
+		if (link != '') {
+			var $this = this;
+			console.log('delete');
+			$.confirm({
+				theme: 'material',
+				title: 'Potvrdit smazání souboru',
+				content: 'Skutečně chcete smazat soubor <strong>'+link+'</strong>?',
+				keyboardEnabled: true,
+				buttons: {
+					confirm: {
+						text: 'Smazat',
+						btnClass: 'btn-primary',
+						action: function(){
+							$this.api('delete-file', link, function(){
+								$this.loadFolder();
+							});
+						}
+					},
+					cancel: {
+						text: 'Ne'
+					}
+				}
+			});
+		}
+	},
 	openButton: function ($button, $link) {
 		console.log($button);
-	},
-	openNewFile: function () {
-		// TODO open additional upload plugin
 	},
 	openNewFolder: function ($button) {
 		var form = $('<form class="new-folder-form" action="" method="post"></form>');
@@ -107,14 +134,20 @@ var FileManager = {
 			theme: 'material',
 			title: 'Potvrdit smazání adresáře',
 			content: 'Skutečně chcete smazat adresář <strong>'+this.selectedFolder.text()+'</strong>?',
-			confirmButton: 'Smazat',
-			cancelButton: 'Ne',
-			confirmButtonClass: 'btn-primary',
 			keyboardEnabled: true,
-			confirm: function(){
-				$this.api('delete-folder', null, function(){
-					$this.initFolders();
-				});
+			buttons: {
+				confirm: {
+					text: 'Smazat',
+					btnClass: 'btn-primary',
+					action: function(){
+						$this.api('delete-folder', null, function () {
+							$this.initFolders();
+						});
+					}
+				},
+				cancel: {
+					text: 'Ne'
+				}
 			}
 		});
 	},
