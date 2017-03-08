@@ -21,7 +21,7 @@
 		private $folderHandler;
 
 		/**
-		 * @return \FileManager\FolderHandler
+		 * @return \xomax\FileManager\FolderHandler
 		 */
 		public function getFolderHandler()
 		{
@@ -51,6 +51,16 @@
 		public function setFolder ( $folder )
 		{
 			$this->folder = $folder;
+			return $this;
+		}
+
+		/**
+		 * @param string $folder
+		 * @return Manager
+		 */
+		public function setIconFolder ( $folder )
+		{
+			$this->iconFolder = $folder;
 			return $this;
 		}
 
