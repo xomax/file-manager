@@ -25,12 +25,9 @@
 		{
 			$folders = [];
 			if ($readFolders = $this->readFolder()) {
-				if (count($readFolders) > 0) {
-					$readFolders = iterator_to_array($readFolders);
-					foreach ($readFolders as $folder) {
-						if ($folder->getFilename() != '_thumbs_' && $folder->getRelativePath() == $parentFolder) {
-							$folders[] = $folder->getFilename();
-						}
+				foreach ($readFolders as $folder) {
+					if ($folder->getFilename() != '_thumbs_' && $folder->getRelativePath() == $parentFolder) {
+						$folders[] = $folder->getFilename();
 					}
 				}
 			}
@@ -56,11 +53,13 @@
 		private function readFolder ()
 		{
 			if ($this->folder === null) {
-				$this->folder = false;
-				if ($this->fileSystem->exists($this->rootFolder)) {
-					$this->folder = $this->finder->directories()
-						->in($this->rootFolder)
-						->sortByName();
+				if (\xs\Helper\FileSystem::folderExists($this->rootFolder)) {
+					$this->folder = \xs\Helper\FileSystem::getFolders($this->rootFolder);
+					if (count($this->folder) == 0) {
+						$this->folder = false;
+					}
+				} else {
+					$this->folder = false;
 				}
 			}
 			return $this->folder;
