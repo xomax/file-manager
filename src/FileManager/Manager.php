@@ -215,7 +215,7 @@
 					<a href="">/</a>
 				</li>
 			';
-			$r .= $this->generateFolderNavigationDirecotries();
+			$r .= $this->generateFolderNavigationDirectories();
 			return $r;
 		}
 
@@ -231,13 +231,13 @@
 			return $r;
 		}
 
-		private function generateFolderNavigationDirecotries ($parent = null)
+		private function generateFolderNavigationDirectories ($parent = null)
 		{
 			$r = '';
 			if ($folders = $this->getFolderHandler()->getFolders($parent)) {
 				foreach ($folders as $folder) {
 					$path = $parent . ($parent != null ? '/' : '') . $folder;
-					$subDirectories = $this->generateFolderNavigationDirecotries($path);
+					$subDirectories = $this->generateFolderNavigationDirectories($path);
 					$r .= '
 						<li>
 							<a href="'.$path.'">'.$folder.'</a>
