@@ -14,7 +14,7 @@
     },
     {
       "type": "composer",
-      "url": "https://xs.repo.si"
+      "url": "https://xs.repo.si/composer"
     }
   ],
   "require": {
@@ -22,7 +22,7 @@
     "symfony/finder": "^4.2",
     "kumatch/filename-normalizer": "^1.0",
     "wapmorgan/file-type-detector": "^1.0",
-    "siriusphp/upload": "^2.1",
+    "siriusphp/upload": "^3.0",
     "intervention/image": "^2.3",
     "xomax/file-icon-generator": "0.*",
     "mattketmo/camel": "^1.1",
